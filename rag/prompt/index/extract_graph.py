@@ -1,4 +1,4 @@
-GRAPH_EXTRACTION_PROMPT = """
+GRAPH_EXTRACTION_PROMPT_v0 = """
 -Goal-
 Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.
  
@@ -37,6 +37,59 @@ Output:
 ("entity"<|>MARKET STRATEGY COMMITTEE<|>ORGANIZATION<|>The Central Institution committee makes key decisions about interest rates and the growth of Verdantis's money supply)
 ##
 ("relationship"<|>MARTIN SMITH<|>CENTRAL INSTITUTION<|>Martin Smith is the Chair of the Central Institution and will answer questions at a press conference<|>9)
+<|COMPLETE|>
+
+######################
+-Real Data-
+######################
+Entity_types: {entity_types}
+Text: {input_text}
+######################
+Output:"""
+
+
+GRAPH_EXTRACTION_PROMPT = """
+-Goal-
+Given a piece of recruitment related material, it could be a job description or a resume or a general query. Let identify all entities of those types from the text and all relationships among the identified entities.
+
+-Steps-
+1. Identify all entities. For each identified entity, extract the following information:
+- entity_name: Name of the entity, capitalized
+- entity_type: One of the following types: [{entity_types}]
+- entity_description: Comprehensive description of the entity's attributes and activities
+ Format each entity as ("entity"<|><entity_name><|><entity_type><|><entity_description>)
+ 
+2. From the entities identified in step 1, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
+For each pair of related entities, extract the following information:
+- source_entity: name of the source entity, as identified in step 1
+- target_entity: name of the target entity, as identified in step 1
+- relationship_description: explanation as to why you think the source entity and the target entity are related to each other
+- relationship_strength: a numeric score indicating strength of the relationship between the source entity and target entity
+ Format each relationship as ("relationship"<|><source_entity><|><target_entity><|><relationship_description><|><relationship_strength>)
+ 
+3. Return output in English as a single list of all the entities and relationships identified in steps 1 and 2. Use **##** as the list delimiter.
+ 
+4. When finished, output <|COMPLETE|>
+ 
+######################
+-Examples-
+######################
+Example 1:
+Entity_types: JOB NAME, JOB TITLE, COUNTRY NAME, CITY NAME, DISTRICT NAME
+Text: Cao sơn là 1 AI Engineer làm việc tại Hà Đông, Hà Nội
+######################
+Output:
+("entity"<|>CAO SƠN<|>JOB NAME<|>An AI Engineer named Cao Sơn who works in Hà Đông, Hà Nội<|>)
+##
+("entity"<|>AI ENGINEER<|>JOB TITLE<|>A professional who develops and implements artificial intelligence systems and solutions<|>)
+##
+("entity"<|>HÀ ĐÔNG<|>DISTRICT NAME<|>A district located in Hà Nội, Vietnam<|>)
+##
+("entity"<|>HÀ NỘI<|>CITY NAME<|>The capital city of Vietnam<|>)
+##
+("relationship"<|>CAO SƠN<|>AI ENGINEER<|>Cao Sơn works as an AI Engineer<|>0.9)
+##
+("relationship"<|>HÀ ĐÔNG<|>HÀ NỘI<|>Hà Đông is a district within Hà Nội city<|>0.8)
 <|COMPLETE|>
 
 ######################
