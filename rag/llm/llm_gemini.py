@@ -27,14 +27,26 @@ class GeminiLLM(LLM):
                 chat_history.append(self.create_user_chat(message))
             else:
                 raise ValueError("role không xác định: " + role)
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={self.gemini_key}"
+            
+        if isinstance(self.gemini_key, list):
+            rs = "Hết quota"
+            for key in self.gemini_key:
+                try:
+                    rs = self.request(key, history)
+                except:
+                    pass
+        
+            return rs
+        
+        return self.request(self.gemini_key, history)
+
+
+    def request(self, key:str, chat_history:list) -> str:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={key}"
         payload = json.dumps({"contents": chat_history})
         headers = {"Content-Type": "application/json"}
         response = rq.post(url, headers=headers, data=payload)
-        try:
-            return response.json()['candidates'][0]['content']['parts'][0]['text']
-        except json.JSONDecodeError:
-            return {"error": "Invalid JSON response"}
+        return response.json()['candidates'][0]['content']['parts'][0]['text']
         
 if __name__ == "__main__":
     # python -m rag.llm.llm_gemini
