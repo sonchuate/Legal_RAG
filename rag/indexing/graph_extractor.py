@@ -1,5 +1,6 @@
 from rag.prompt.index.extract_graph import GRAPH_EXTRACTION_PROMPT
-from rag.llm.llm_vllm import vLLM_LLM
+from rag.llm.llm_gemini import GeminiLLM
+from rag.db.neo4j.utils import Node, Edge, Graph, GraphManager
 
 if __name__ == "__main__":
     import time
@@ -20,11 +21,11 @@ Theo quy định tại khoản 4 Điều 9 Nghị định 168/2024/NĐ-CP thì p
 
 Như vậy, mức phạt lỗi không đội mũ bảo hiểm năm 2025 đối với người điều khiển xe đạp, xe đạp máy sẽ bị phạt tiền từ 400.000 đồng đến 600.000 đồng. 
 """
-    llm  = vLLM_LLM({'url':'https://7d2c-34-71-230-150.ngrok-free.app'})
+    llm  = GeminiLLM({'gemini_key':'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q'})
     st = time.time()
-    print(llm.chat([
-        {'role':'system','content':'You are a traffic assistant'},
+    ans = llm.chat([
         {'role':'user','content':GRAPH_EXTRACTION_PROMPT.format(entity_types ="person, law name, traffic violation, fine, object, traffic regulation, age", input_text = input_text)}
         
-    ]))
+    ])
+    print(ans)
     print('/> exec time:', time.time() - st)
