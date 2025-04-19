@@ -45,7 +45,27 @@ class Edge:
         with driver.session() as session:
             session.run(query, from_name=self.src_node.properties.get("name"),
                         to_name=self.trg_node.properties.get("name"))
+    
+class Graph:
+    def __init__(self, list_nodes:list[Node], list_edges:list[Edge]):
+        self.list_nodes = list_nodes
+        self.list_edges = list_edges
 
+    def create(self, driver):
+        """Thêm cạnh giữa 2 node vào Neo4j"""
+        for node in self.list_nodes:
+            node.create(driver)
+        
+        for edge in self.list_edges:
+            edge.create(driver)
+    
+    def delete(self, driver):
+        for node in self.list_nodes:
+            node.delete(driver)
+        
+        for edge in self.list_edges:
+            edge.delete(driver)
+            
 class GraphManager:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
