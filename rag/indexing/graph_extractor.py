@@ -1,4 +1,4 @@
-from rag.prompt.index.extract_graph import GRAPH_EXTRACTION_PROMPT
+from rag.prompt.index.extract_jd import JD_EXTRACT_GRAPH_PROMPT
 from rag.llm.llm_gemini import GeminiLLM
 from rag.db.neo4j.utils import Node, Edge, Graph, GraphManager
 from rag.utils.converter import Converter
@@ -15,7 +15,7 @@ class GraphExtractor:
 
     def get_graph(self, input_text:str, entity_types:str, return_ans:bool=False) -> Graph:
         ans = self.llm.chat([
-            {'role':'user','content':GRAPH_EXTRACTION_PROMPT.format(entity_types = entity_types, input_text = input_text)}
+            {'role':'user','content':JD_EXTRACT_GRAPH_PROMPT.format(entity_types = entity_types, input_text = input_text)}
             
         ])
         if return_ans:
@@ -36,7 +36,11 @@ if __name__ == "__main__":
         with open(f'E:/data/jd/{i}.txt', 'r', encoding='utf-8') as f:
             input_text = f.read()
 
-        config = {'gemini_key':'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q'}
+        config = {'gemini_key':[
+            'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q', 
+            'AIzaSyCK5hiiN2ThX9e1lJt-RfNyLB2J2WKzhoU',
+            'AIzaSyBZoSgFZpHugCoPpJXyrQEqxkB7Vfb76NQ'
+            ]}
         st = time.time()
         entity_types = 'JOB NAME, COUNTRY NAME, CITY NAME, DISTRICT NAME, LANGUAGE, PROGRAMMING LANGUAGE, SOFTWARE, SALARY, EXPERIENCE, EDUCATION LEVEL, MAJOR, TECHNOLOGY STACK, SKILL, CERTIFICATE, SCORE, CATEGORY, LIBRARY, JOB CANDIDATE'
 
