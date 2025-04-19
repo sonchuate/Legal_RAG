@@ -37,6 +37,7 @@ class GeminiLLM(LLM):
             return {"error": "Invalid JSON response"}
         
 if __name__ == "__main__":
+    # python -m rag.llm.llm_gemini
     llm  = GeminiLLM({'gemini_key':'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q'})
     print(llm.chat([{'role':'user','content':'How are you today'}]))
 
