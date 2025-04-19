@@ -19,4 +19,4 @@ class Converter:
                 _, node_name_1, node_name_2, rel_type, ao = line[1:-1]
                 edges.append(Edge(name2node[node_name_1], name2node[node_name_2], rel_type + "|" + ao))
 
-        return Graph(name2node.values(), edges)
+    return Graph(name2node.values(), edges)
