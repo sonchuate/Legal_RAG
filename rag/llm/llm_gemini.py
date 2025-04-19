@@ -32,13 +32,13 @@ class GeminiLLM(LLM):
             rs = "Hết quota"
             for key in self.gemini_key:
                 try:
-                    rs = self.request(key, history)
+                    return self.request(key, chat_history)
                 except:
                     pass
         
             return rs
         
-        return self.request(self.gemini_key, history)
+        return self.request(self.gemini_key, chat_history)
 
 
     def request(self, key:str, chat_history:list) -> str:
@@ -50,7 +50,12 @@ class GeminiLLM(LLM):
         
 if __name__ == "__main__":
     # python -m rag.llm.llm_gemini
-    llm  = GeminiLLM({'gemini_key':'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q'})
+    config = {'gemini_key':[
+            'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q', 
+            'AIzaSyCK5hiiN2ThX9e1lJt-RfNyLB2J2WKzhoU',
+            'AIzaSyBZoSgFZpHugCoPpJXyrQEqxkB7Vfb76NQ'
+            ]}
+    llm  = GeminiLLM(config)
     print(llm.chat([{'role':'user','content':'How are you today'}]))
 
         
