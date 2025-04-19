@@ -1,0 +1,18 @@
+digraph {
+	"JOB NAME" [label="AI ENGINEER"]
+	"CITY NAME" [label="HÀ NỘI"]
+	"DISTRICT NAME" [label="THANH XUÂN"]
+	"COUNTRY NAME" [label=VIETNAM]
+	"TECHNOLOGY STACK" [label="DIFFUSION MODELS"]
+	MAJOR [label=STATISTICS]
+	MAJOR [label=ANALYTICS]
+	EXPERIMENCE [label="2 YEARS"]
+	SALARY [label="50 MILLION VND"]
+	"AI ENGINEER" -> "DIFFUSION MODELS" [label="The AI Engineer should have experience with Diffusion Models, a type of generative AI model"]
+	"AI ENGINEER" -> STATISTICS [label="The AI Engineer should have good knowledge of Statistics, a field of study"]
+	"AI ENGINEER" -> ANALYTICS [label="The AI Engineer should have good knowledge of Analytics, a field of study"]
+	"AI ENGINEER" -> "HÀ NỘI" [label="The AI Engineer will be working in Hà Nội, the capital city of Vietnam"]
+	"HÀ NỘI" -> "THANH XUÂN" [label="Thanh Xuân is a district located in Hà Nội, the capital city of Vietnam"]
+	"AI ENGINEER" -> "2 YEARS" [label="The AI Engineer position requires at least 2 years of experience with AI development"]
+	"AI ENGINEER" -> "50 MILLION VND" [label="The AI Engineer position offers a salary of up to 50 million VND"]
+}
