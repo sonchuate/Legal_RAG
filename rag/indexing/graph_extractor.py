@@ -1,4 +1,5 @@
 from rag.prompt.index.extract_jd import JD_EXTRACT_GRAPH_PROMPT
+from rag.prompt.index.short_jd import SHORT_JD_PROMPT
 from rag.llm.llm_gemini import GeminiLLM
 from rag.db.neo4j.utils import Node, Edge, Graph, GraphManager
 from rag.utils.converter import Converter
@@ -45,13 +46,17 @@ if __name__ == "__main__":
         entity_types = 'JOB NAME, COUNTRY NAME, CITY NAME, DISTRICT NAME, LANGUAGE, PROGRAMMING LANGUAGE, SOFTWARE, SALARY, EXPERIENCE, EDUCATION LEVEL, MAJOR, TECHNOLOGY STACK, SKILL, CERTIFICATE, SCORE, CATEGORY, LIBRARY, JOB CANDIDATE'
 
         ge = GraphExtractor(config)
-
-
+        llm  = GeminiLLM(config)
+        input_text = llm.chat([
+            {'role':'user','content':SHORT_JD_PROMPT.format(input_text = input_text)}
+            
+        ])
 
         graph, ans = ge.get_graph(input_text, entity_types, return_ans=True)
         with open(f'E:/data/jd/{i}_.txt', 'w', encoding='utf-8') as f:
             f.write(ans)
         print('/> exec time:', time.time() - st)
+        # break
     # print('converter')
     # for node in graph.list_nodes:
     #     print(f"{node.label} - {node.properties}")
