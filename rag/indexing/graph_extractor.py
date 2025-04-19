@@ -1,31 +1,62 @@
 from rag.prompt.index.extract_graph import GRAPH_EXTRACTION_PROMPT
 from rag.llm.llm_gemini import GeminiLLM
 from rag.db.neo4j.utils import Node, Edge, Graph, GraphManager
+from rag.utils.converter import Converter
+
+class GraphExtractor:
+    def __init__(self, config, llm_type:int=0):
+        self.llm_type = llm_type
+        if llm_type == 0:
+            self.llm  = GeminiLLM(config)
+        else:
+            raise Exception('Unsupport llm_type', llm_type)
+
+        self.converter = Converter()
+
+    def get_graph(self, input_text:str, entity_types:str, return_ans:bool=False) -> Graph:
+        ans = self.llm.chat([
+            {'role':'user','content':GRAPH_EXTRACTION_PROMPT.format(entity_types = entity_types, input_text = input_text)}
+            
+        ])
+        if return_ans:
+            graph = None
+            try: 
+                graph = self.converter.response2graph(ans)
+            except:
+                print('err')
+            return graph, ans
+        return self.converter.response2graph(ans)
+    
+
+
 
 if __name__ == "__main__":
     import time
-    input_text = \
-"""Mức phạt lỗi không đội mũ bảo hiểm năm 2025 là bao nhiêu? 
-(1) Mức phạt lỗi không đội mũ bảo hiểm năm 2025 đối với xe đạp, xe đạp máy
-Theo quy định tại khoản 4 Điều 9 Nghị định 168/2024/NĐ-CP thì phạt tiền từ 400.000 đồng đến 600.000 đồng đối với người điều khiển xe thực hiện một trong các hành vi vi phạm sau:
+    for i in range(1, 35):
+        with open(f'E:/data/jd/{i}.txt', 'r', encoding='utf-8') as f:
+            input_text = f.read()
 
-- Gây tai nạn giao thông không dừng ngay phương tiện, không giữ nguyên hiện trường, không trợ giúp người bị nạn, không ở lại hiện trường hoặc không đến trình báo ngay với cơ quan công an, Ủy ban nhân dân nơi gần nhất;
+        config = {'gemini_key':'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q'}
+        st = time.time()
+        entity_types = 'JOB NAME, COUNTRY NAME, CITY NAME, DISTRICT NAME, LANGUAGE, PROGRAMMING LANGUAGE, SOFTWARE, SALARY, EXPERIENCE, EDUCATION LEVEL, MAJOR, TECHNOLOGY STACK, SKILL, CERTIFICATE, SCORE, CATEGORY, LIBRARY, JOB CANDIDATE'
 
-- Điều khiển xe trên đường mà trong máu hoặc hơi thở có nồng độ cồn vượt quá 80 miligam/100 mililít máu hoặc vượt quá 0,4 miligam/1 lít khí thở;
+        ge = GraphExtractor(config)
 
-- Không chấp hành yêu cầu kiểm tra về nồng độ cồn của người thi hành công vụ;
 
-- Người điều khiển xe đạp máy không đội “mũ bảo hiểm cho người đi mô tô, xe máy” hoặc đội “mũ bảo hiểm cho người đi mô tô, xe máy” không cài quai đúng quy cách khi tham gia giao thông trên đường bộ;
 
-- Chở người ngồi trên xe đạp máy không đội “mũ bảo hiểm cho người đi mô tô, xe máy” hoặc đội “mũ bảo hiểm cho người đi mô tô, xe máy” không cài quai đúng quy cách, trừ trường hợp chở người bệnh đi cấp cứu, trẻ em dưới 06 tuổi, áp giải người có hành vi vi phạm pháp luật.
+        graph, ans = ge.get_graph(input_text, entity_types, return_ans=True)
+        with open(f'E:/data/jd/{i}_.txt', 'w', encoding='utf-8') as f:
+            f.write(ans)
+        print('/> exec time:', time.time() - st)
+    # print('converter')
+    # for node in graph.list_nodes:
+    #     print(f"{node.label} - {node.properties}")
 
-Như vậy, mức phạt lỗi không đội mũ bảo hiểm năm 2025 đối với người điều khiển xe đạp, xe đạp máy sẽ bị phạt tiền từ 400.000 đồng đến 600.000 đồng. 
-"""
-    llm  = GeminiLLM({'gemini_key':'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q'})
-    st = time.time()
-    ans = llm.chat([
-        {'role':'user','content':GRAPH_EXTRACTION_PROMPT.format(entity_types ="person, law name, traffic violation, fine, object, traffic regulation, age", input_text = input_text)}
-        
-    ])
-    print(ans)
-    print('/> exec time:', time.time() - st)
+    # for edge in graph.list_edges:
+    #     node1 = edge.src_node
+    #     node2 = edge.trg_node
+    #     rel_type = edge.rel_type
+    #     print(f"{node1.label} - {node1.properties}")
+    #     print(f"{node2.label} - {node2.properties}")
+    #     print(rel_type)
+    # print('/> exec time:', time.time() - st)
