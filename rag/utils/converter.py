@@ -17,7 +17,6 @@ class Converter:
             if '"entity"<|>' in line:
                 parts = line.strip('()').split('<|>')
                 _, node_name, node_type, node_description, _ = parts
-                print(node_name)
                 name2node[node_name] = Node(
                     node_type.upper(),
                     {"name": node_name, "node_description": node_description}
