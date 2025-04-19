@@ -9,20 +9,21 @@ class Converter:
         name2node = {}
         edges = []
 
-        for line in response.split('##'):
+        for line in response.split('\n'):
             line = line.strip()
             if not line:
                 continue
 
-            if line.startswith('("entity'):
+            if '"entity"<|>' in line:
                 parts = line.strip('()').split('<|>')
                 _, node_name, node_type, node_description, _ = parts
+                print(node_name)
                 name2node[node_name] = Node(
                     node_type.upper(),
                     {"name": node_name, "node_description": node_description}
                     )
 
-            elif line.startswith('("relationship'):
+            elif '"relationship"<|>' in line:
                 parts = line.strip('()').split('<|>')
                 _, node_name_1, node_name_2, rel_type, ao = parts
                 edges.append(Edge(
