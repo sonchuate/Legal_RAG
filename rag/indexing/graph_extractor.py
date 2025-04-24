@@ -3,6 +3,7 @@ from rag.prompt.index.short_jd import SHORT_JD_PROMPT
 from rag.llm.llm_gemini import GeminiLLM
 from rag.db.neo4j.utils import Node, Edge, Graph, GraphManager
 from rag.utils.converter import Converter
+from rag.utils.config import ConfigLoader
 
 class GraphExtractor:
     def __init__(self, config, llm_type:int=0):
@@ -37,11 +38,7 @@ if __name__ == "__main__":
         with open(f'E:/data/jd/{i}.txt', 'r', encoding='utf-8') as f:
             input_text = f.read()
 
-        config = {'gemini_key':[
-            'AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q', 
-            'AIzaSyCK5hiiN2ThX9e1lJt-RfNyLB2J2WKzhoU',
-            'AIzaSyBZoSgFZpHugCoPpJXyrQEqxkB7Vfb76NQ'
-            ]}
+        config = ConfigLoader().get_config_from_file('config/config.yaml')
         st = time.time()
         entity_types = 'JOB NAME, COUNTRY NAME, CITY NAME, DISTRICT NAME, LANGUAGE, PROGRAMMING LANGUAGE, SOFTWARE, SALARY, EXPERIENCE, EDUCATION LEVEL, MAJOR, TECHNOLOGY STACK, SKILL, CERTIFICATE, SCORE, CATEGORY, LIBRARY, JOB CANDIDATE'
 

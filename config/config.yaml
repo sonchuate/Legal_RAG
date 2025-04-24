@@ -1,5 +1,4 @@
-neo4j:
-  host: localhost
-  port: 7687
-  username: neo4j
-  password: secret
+gemini_key:
+- AIzaSyCMChcFML_dA97fNRD0i-gm2xXBA3PVz0Q
+- AIzaSyCK5hiiN2ThX9e1lJt-RfNyLB2J2WKzhoU
+- AIzaSyBZoSgFZpHugCoPpJXyrQEqxkB7Vfb76NQ
